@@ -9,6 +9,15 @@ A modern Windows desktop app for comparing two file collections by filename and 
 |:--:|:--:|
 | <img src="docs/screenshots/main-zh.png" width="480" alt="简体中文界面"> | <img src="docs/screenshots/main-en.png" width="480" alt="English UI"> |
 
+## Download
+
+Download the latest self-contained build from [Releases](https://github.com/Wang-Nainai/file-compare-tool/releases/latest):
+
+- `FileCompareTool-v1.0.0-win-x64.exe` — single executable for Windows 10/11 x64, no .NET installation required.
+- SHA-256: `0CBA0207EC0797BD69787E552E1CBC11810483D93FF45A98C0989939230842A4`
+
+The executable is not code-signed, so Windows SmartScreen may show a warning on first launch. Choose **More info → Run anyway** only if you trust this repository.
+
 ## Features
 
 - **Filename matching** — compares A and B by filename only, case-insensitively.
@@ -78,7 +87,18 @@ Create a self-contained Windows x64 build:
 dotnet publish FileCompareTool.csproj -c Release -r win-x64 --self-contained true -o publish
 ```
 
-The output is in `publish/`. Do not commit this folder; it is ignored by Git.
+Or build the single-file release executable:
+
+```powershell
+dotnet publish FileCompareTool.csproj -c Release -r win-x64 --self-contained true `
+  -p:PublishSingleFile=true `
+  -p:IncludeNativeLibrariesForSelfExtract=true `
+  -p:EnableCompressionInSingleFile=true `
+  -p:DebugType=None -p:DebugSymbols=false `
+  -o publish-single
+```
+
+The output is in `publish/` or `publish-single/`. Do not commit these folders; generated build output is ignored by Git.
 
 ## Project structure
 
@@ -107,6 +127,15 @@ Issues and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING
 ## 简体中文
 
 一个本地运行的 Windows 文件名比对工具：按文件名比较 A / B，并将 B 中选中的重复文件安全移动到回收站。所有处理都在本机完成，不会上传文件名或文件内容。
+
+### 下载
+
+从 [Releases](https://github.com/Wang-Nainai/file-compare-tool/releases/latest) 下载最新版本：
+
+- `FileCompareTool-v1.0.0-win-x64.exe`：Windows 10/11 x64 自包含单文件，无需安装 .NET
+- SHA-256：`0CBA0207EC0797BD69787E552E1CBC11810483D93FF45A98C0989939230842A4`
+
+程序未做代码签名，首次运行时 Windows SmartScreen 可能提示风险。确认信任本仓库后，可选择 **更多信息 → 仍要运行**。
 
 ### 功能
 
