@@ -1,0 +1,31 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore FileCompareTool.csproj
+
+      - name: Build
+        run: dotnet build FileCompareTool.csproj -c Release --no-restore
+
+      - name: Test
+        run: dotnet run --project Tests/FileCompareTool.Tests/FileCompareTool.Tests.csproj -c Release

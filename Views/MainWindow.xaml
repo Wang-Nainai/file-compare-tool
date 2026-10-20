@@ -1,0 +1,844 @@
+<Window x:Class="FileCompareTool.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FileCompareTool.ViewModels"
+        Title="{DynamicResource App_Title}"
+        Width="1180"
+        Height="780"
+        MinWidth="900"
+        MinHeight="640"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F3F3"
+        FontFamily="Segoe UI Variable Text, Microsoft YaHei UI, Segoe UI"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Resources/FluentStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid Margin="28,20,28,22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ===== Header ===== -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource AppIconTile}" VerticalAlignment="Center">
+                <TextBlock Text="&#xE8C8;"
+                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                           FontSize="21"
+                           Foreground="{StaticResource AccentBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+
+            <StackPanel Grid.Column="1" Margin="13,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="{DynamicResource App_Title}"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                <TextBlock Text="{DynamicResource App_Subtitle}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           Margin="0,3,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Style="{StaticResource PillBorder}" Padding="10,5">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="6" Height="6" Fill="{StaticResource SuccessBrush}"
+                                 VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="{DynamicResource App_PrivacyBadge}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#F4F4F4"
+                        CornerRadius="9"
+                        Padding="2"
+                        Margin="8,0,0,0"
+                        ToolTip="{DynamicResource Tooltip_LanguageSwitch}">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="中文"
+                                     Style="{StaticResource SegmentedRadioButton}"
+                                     GroupName="InterfaceLanguage"
+                                     IsChecked="{Binding IsLanguageChinese, Mode=TwoWay}"
+                                     Padding="8,4"/>
+                        <RadioButton Content="EN"
+                                     Style="{StaticResource SegmentedRadioButton}"
+                                     GroupName="InterfaceLanguage"
+                                     IsChecked="{Binding IsLanguageEnglish, Mode=TwoWay}"
+                                     Padding="8,4"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <!-- ===== A / B panels ===== -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- A -->
+            <Border Grid.Column="0" Style="{StaticResource CardBorder}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="118"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Style="{StaticResource SmallIconTile}">
+                                <TextBlock Text="&#xE8B7;"
+                                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                           FontSize="13"
+                                           Foreground="{StaticResource AccentBrush}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="{DynamicResource Main_A_Section}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="9,0,0,0"/>
+                            <Border Style="{StaticResource PillBorder}" Margin="10,0,0,0" Padding="8,2">
+                                <TextBlock FontSize="10.5" Foreground="{StaticResource TextSecondaryBrush}">
+                                    <Run Text="{Binding TotalAFiles, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}"/><Run Text="{DynamicResource Unit_FilesWithSpace}"/>
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button Style="{StaticResource FluentSubtleButton}"
+                                    Foreground="{StaticResource AccentBrush}"
+                                    Command="{Binding AddFilesToACommand}"
+                                    Padding="8,4"
+                                    Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource Tooltip_AddFilesA}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE710;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="10" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{DynamicResource Button_AddFiles}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource FluentSubtleButton}"
+                                    Foreground="{StaticResource AccentBrush}"
+                                    Command="{Binding AddFoldersToACommand}"
+                                    Padding="8,4"
+                                    ToolTip="{DynamicResource Tooltip_AddFolderA}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="10" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{DynamicResource Button_AddFolder}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <Border Grid.Row="2"
+                            CornerRadius="10"
+                            Background="{StaticResource SurfaceSubtleBrush}"
+                            AllowDrop="True"
+                            DragEnter="OnDragEnterA"
+                            DragLeave="OnDragLeaveA"
+                            DragOver="OnDragOver"
+                            Drop="OnDropA">
+                        <Grid>
+                            <Rectangle Margin="1"
+                                       RadiusX="9"
+                                       RadiusY="9"
+                                       Stroke="#D2D2D2"
+                                       StrokeThickness="1"
+                                       StrokeDashArray="3 2"
+                                       IsHitTestVisible="False"/>
+                            <StackPanel HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        IsHitTestVisible="False"
+                                        Visibility="{Binding APaths.Count, Converter={StaticResource ZeroToVisibilityConverter}}">
+                                <Border Width="38" Height="38" CornerRadius="19" Background="{StaticResource AccentSoftBrush}" HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE8B7;"
+                                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                               FontSize="17"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="{DynamicResource Drop_HintTitle}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,7,0,2"/>
+                                <TextBlock Text="{DynamicResource Drop_HintSubtitle}"
+                                           FontSize="10"
+                                           Foreground="{StaticResource TextTertiaryBrush}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <ListBox ItemsSource="{Binding APaths}"
+                                     Margin="6"
+                                     Padding="0"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="7" Padding="8,5" Background="Transparent">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Width="28" Height="28" CornerRadius="7" Background="#F3F6F9">
+                                                    <TextBlock Text="{Binding IconGlyph}"
+                                                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                                               FontSize="12"
+                                                               Foreground="{StaticResource AccentBrush}"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+
+                                                <StackPanel Grid.Column="1" Margin="8,0,8,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding FullPath}"
+                                                               FontSize="11.5"
+                                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               ToolTip="{Binding FullPath}"/>
+                                                    <TextBlock Text="{Binding SubText}"
+                                                               FontSize="9.5"
+                                                               Foreground="{StaticResource TextTertiaryBrush}"
+                                                               Margin="0,1,0,0"/>
+                                                </StackPanel>
+
+                                                <Button Grid.Column="2"
+                                                        Style="{StaticResource FluentIconButton}"
+                                                        Content="✕"
+                                                        FontSize="10"
+                                                        Command="{Binding DataContext.RemovePathACommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip="{DynamicResource Tooltip_RemovePath}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- B -->
+            <Border Grid.Column="2" Style="{StaticResource CardBorder}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="118"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Style="{StaticResource SmallIconTile}" Background="{StaticResource DangerSoftBrush}">
+                                <TextBlock Text="&#xE8B7;"
+                                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                           FontSize="13"
+                                           Foreground="{StaticResource ErrorBrush}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="{DynamicResource Main_B_Section}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="9,0,0,0"/>
+                            <Border Style="{StaticResource PillBorder}" Margin="10,0,0,0" Padding="8,2">
+                                <TextBlock FontSize="10.5" Foreground="{StaticResource TextSecondaryBrush}">
+                                    <Run Text="{Binding TotalBFiles, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}"/><Run Text="{DynamicResource Unit_FilesWithSpace}"/>
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button Style="{StaticResource FluentSubtleButton}"
+                                    Foreground="{StaticResource AccentBrush}"
+                                    Command="{Binding AddFilesToBCommand}"
+                                    Padding="8,4"
+                                    Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource Tooltip_AddFilesB}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE710;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="10" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{DynamicResource Button_AddFiles}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource FluentSubtleButton}"
+                                    Foreground="{StaticResource AccentBrush}"
+                                    Command="{Binding AddFoldersToBCommand}"
+                                    Padding="8,4"
+                                    ToolTip="{DynamicResource Tooltip_AddFolderB}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="10" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{DynamicResource Button_AddFolder}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <Border Grid.Row="2"
+                            CornerRadius="10"
+                            Background="{StaticResource SurfaceSubtleBrush}"
+                            AllowDrop="True"
+                            DragEnter="OnDragEnterB"
+                            DragLeave="OnDragLeaveB"
+                            DragOver="OnDragOver"
+                            Drop="OnDropB">
+                        <Grid>
+                            <Rectangle Margin="1"
+                                       RadiusX="9"
+                                       RadiusY="9"
+                                       Stroke="#D2D2D2"
+                                       StrokeThickness="1"
+                                       StrokeDashArray="3 2"
+                                       IsHitTestVisible="False"/>
+                            <StackPanel HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        IsHitTestVisible="False"
+                                        Visibility="{Binding BPaths.Count, Converter={StaticResource ZeroToVisibilityConverter}}">
+                                <Border Width="38" Height="38" CornerRadius="19" Background="{StaticResource DangerSoftBrush}" HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE8B7;"
+                                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                               FontSize="17"
+                                               Foreground="{StaticResource ErrorBrush}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="{DynamicResource Drop_HintTitle}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,7,0,2"/>
+                                <TextBlock Text="{DynamicResource Drop_HintSubtitle}"
+                                           FontSize="10"
+                                           Foreground="{StaticResource TextTertiaryBrush}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <ListBox ItemsSource="{Binding BPaths}"
+                                     Margin="6"
+                                     Padding="0"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="7" Padding="8,5" Background="Transparent">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Width="28" Height="28" CornerRadius="7" Background="#FBF3F2">
+                                                    <TextBlock Text="{Binding IconGlyph}"
+                                                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                                               FontSize="12"
+                                                               Foreground="{StaticResource ErrorBrush}"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+
+                                                <StackPanel Grid.Column="1" Margin="8,0,8,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding FullPath}"
+                                                               FontSize="11.5"
+                                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               ToolTip="{Binding FullPath}"/>
+                                                    <TextBlock Text="{Binding SubText}"
+                                                               FontSize="9.5"
+                                                               Foreground="{StaticResource TextTertiaryBrush}"
+                                                               Margin="0,1,0,0"/>
+                                                </StackPanel>
+
+                                                <Button Grid.Column="2"
+                                                        Style="{StaticResource FluentIconButton}"
+                                                        Content="✕"
+                                                        FontSize="10"
+                                                        Command="{Binding DataContext.RemovePathBCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip="{DynamicResource Tooltip_RemovePath}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ===== Status + actions ===== -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <Border Style="{StaticResource MetricChip}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource Metric_AFiles}" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding TotalAFiles}" FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextPrimaryBrush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource MetricChip}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource Metric_BFiles}" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding TotalBFiles}" FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextPrimaryBrush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource MetricChip}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource Metric_Matches}" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding TotalMatches}" FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{StaticResource AccentBrush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource MetricChip}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource Metric_Selected}" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding SelectedCount}" FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{StaticResource SuccessBrush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <TextBlock Text="{Binding StatusMessage}"
+                           FontSize="11"
+                           Foreground="{StaticResource TextTertiaryBrush}"
+                           Margin="2,7,0,0"
+                           TextTrimming="CharacterEllipsis"/>
+
+                <ProgressBar Value="{Binding ScanProgressValue}"
+                             Maximum="100"
+                             Width="380"
+                             HorizontalAlignment="Left"
+                             Margin="2,5,0,0"
+                             Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="{DynamicResource Button_Cancel}"
+                        Style="{StaticResource FluentSubtleButton}"
+                        Command="{Binding CancelScanCommand}"
+                        Padding="14,7"
+                        FontSize="12"
+                        Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Margin="0,0,4,0"/>
+
+                <Button Style="{StaticResource FluentPrimaryButton}"
+                        Command="{Binding StartScanCommand}"
+                        Padding="16,8"
+                        IsEnabled="{Binding CanStart}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE721;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Button_StartScan}" Margin="7,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource FluentDangerButton}"
+                        Command="{Binding DeleteSelectedCommand}"
+                        Padding="16,8"
+                        Margin="8,0,0,0"
+                        IsEnabled="{Binding CanDelete}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74D;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Button_DeleteSelected}" Margin="7,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- ===== Results ===== -->
+        <Border Grid.Row="6" Style="{StaticResource CardBorder}" Padding="14"
+                Visibility="{Binding HasMatchResults, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Results_Title}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   VerticalAlignment="Center"/>
+                        <Border Style="{StaticResource AccentPill}" Margin="8,0,0,0">
+                            <TextBlock FontSize="10.5" Foreground="{StaticResource AccentBrush}">
+                                <Run Text="{Binding TotalMatches, Mode=OneWay}" FontWeight="SemiBold"/><Run Text="{DynamicResource Unit_MatchesWithSpace}"/>
+                            </TextBlock>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="22,0,0,0" VerticalAlignment="Center">
+                        <Button Content="{DynamicResource Button_SelectAll}" Style="{StaticResource FluentSubtleButton}" Command="{Binding SelectAllCommand}" Margin="0,0,2,0"/>
+                        <Button Content="{DynamicResource Button_DeselectAll}" Style="{StaticResource FluentSubtleButton}" Command="{Binding DeselectAllCommand}" Margin="0,0,2,0"/>
+                        <Button Content="{DynamicResource Button_InvertSelection}" Style="{StaticResource FluentSubtleButton}" Command="{Binding InvertSelectionCommand}"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="2" Background="#F4F4F4" CornerRadius="9" Padding="2" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="{DynamicResource View_List}" Style="{StaticResource SegmentedRadioButton}"
+                                         GroupName="ViewMode"
+                                         IsChecked="{Binding IsViewModeList, Mode=TwoWay}"/>
+                            <RadioButton Content="{DynamicResource View_Details}" Style="{StaticResource SegmentedRadioButton}"
+                                         GroupName="ViewMode"
+                                         IsChecked="{Binding IsViewModeDetails, Mode=TwoWay}"/>
+                            <RadioButton Content="{DynamicResource View_Tiles}" Style="{StaticResource SegmentedRadioButton}"
+                                         GroupName="ViewMode"
+                                         IsChecked="{Binding IsViewModeTiles, Mode=TwoWay}"/>
+                            <RadioButton Content="{DynamicResource View_Icons}" Style="{StaticResource SegmentedRadioButton}"
+                                         GroupName="ViewMode"
+                                         IsChecked="{Binding IsViewModeIcons, Mode=TwoWay}"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- List view -->
+                <ListBox Grid.Row="2" ItemsSource="{Binding MatchResults}"
+                         Visibility="{Binding IsViewModeList, Converter={StaticResource BoolToVisibilityConverter}}"
+                         MouseDoubleClick="OnMatchDoubleClick"
+                         MouseRightButtonUp="OnMatchRightClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10,7">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox Grid.Column="0"
+                                              Style="{StaticResource FluentCheckBox}"
+                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                              Margin="0,0,12,0"
+                                              AutomationProperties.Name="{DynamicResource Automation_SelectMatch}"/>
+
+                                    <Border Grid.Column="1" Style="{StaticResource ExtensionTile}" Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding ExtensionLabel}"
+                                                   FontSize="9"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding FileName, Mode=OneWay}"
+                                               FontSize="12.5"
+                                               FontWeight="Medium"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
+
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <Border Style="{StaticResource AccentPill}" Padding="7,2">
+                                            <TextBlock FontSize="10" Foreground="{StaticResource AccentBrush}">
+                                                <Run Text="A "/>
+                                                <Run Text="{Binding ACount, Mode=OneWay}" FontWeight="SemiBold"/>
+                                            </TextBlock>
+                                        </Border>
+                                        <Border Style="{StaticResource DangerPill}" Padding="7,2" Margin="6,0,0,0">
+                                            <TextBlock FontSize="10" Foreground="{StaticResource ErrorBrush}">
+                                                <Run Text="B "/>
+                                                <Run Text="{Binding BCount, Mode=OneWay}" FontWeight="SemiBold"/>
+                                            </TextBlock>
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Details view -->
+                <ListBox Grid.Row="2" ItemsSource="{Binding MatchResults}"
+                         Visibility="{Binding IsViewModeDetails, Converter={StaticResource BoolToVisibilityConverter}}"
+                         MouseDoubleClick="OnMatchDoubleClick"
+                         MouseRightButtonUp="OnMatchRightClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="92"/>
+                                        <ColumnDefinition Width="92"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox Grid.Column="0"
+                                              Style="{StaticResource FluentCheckBox}"
+                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                              Margin="0,0,12,0"
+                                              AutomationProperties.Name="{DynamicResource Automation_SelectMatch}"/>
+
+                                    <Border Grid.Column="1" Style="{StaticResource ExtensionTile}" Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding ExtensionLabel}"
+                                                   FontSize="9"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding FileName, Mode=OneWay}"
+                                               FontSize="12.5"
+                                               FontWeight="Medium"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
+
+                                    <StackPanel Grid.Column="3" VerticalAlignment="Center">
+                                        <TextBlock Text="{DynamicResource DetailView_A_Label}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource TextTertiaryBrush}"/>
+                                        <TextBlock Text="{Binding ACount, Mode=OneWay}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource AccentBrush}"
+                                                   Margin="0,1,0,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="4" VerticalAlignment="Center">
+                                        <TextBlock Text="{DynamicResource DetailView_B_Label}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource TextTertiaryBrush}"/>
+                                        <TextBlock Text="{Binding BCount, Mode=OneWay}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource ErrorBrush}"
+                                                   Margin="0,1,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Tiles view -->
+                <ListBox Grid.Row="2" ItemsSource="{Binding MatchResults}"
+                         Visibility="{Binding IsViewModeTiles, Converter={StaticResource BoolToVisibilityConverter}}"
+                         MouseDoubleClick="OnMatchDoubleClick"
+                         MouseRightButtonUp="OnMatchRightClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="248"
+                                    Height="106"
+                                    Background="{StaticResource SurfaceSubtleBrush}"
+                                    BorderBrush="#ECECEC"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Padding="12"
+                                    Margin="4">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <DockPanel>
+                                        <CheckBox Style="{StaticResource FluentCheckBox}"
+                                                  IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                  DockPanel.Dock="Left"
+                                                  Margin="0,0,8,0"
+                                                  AutomationProperties.Name="{DynamicResource Automation_SelectMatch}"/>
+                                        <Border Style="{StaticResource ExtensionTile}" Width="30" Height="30" HorizontalAlignment="Right">
+                                            <TextBlock Text="{Binding ExtensionLabel}"
+                                                       FontSize="8.5"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                    </DockPanel>
+
+                                    <TextBlock Grid.Row="1"
+                                               Text="{Binding FileName, Mode=OneWay}"
+                                               FontSize="12"
+                                               FontWeight="Medium"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center"
+                                               Margin="0,6,0,6"/>
+
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                        <Border Style="{StaticResource AccentPill}" Padding="7,2">
+                                            <TextBlock FontSize="10" Foreground="{StaticResource AccentBrush}">
+                                                <Run Text="A "/>
+                                                <Run Text="{Binding ACount, Mode=OneWay}" FontWeight="SemiBold"/>
+                                            </TextBlock>
+                                        </Border>
+                                        <Border Style="{StaticResource DangerPill}" Padding="7,2" Margin="6,0,0,0">
+                                            <TextBlock FontSize="10" Foreground="{StaticResource ErrorBrush}">
+                                                <Run Text="B "/>
+                                                <Run Text="{Binding BCount, Mode=OneWay}" FontWeight="SemiBold"/>
+                                            </TextBlock>
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+
+                <!-- Icons view -->
+                <ListBox Grid.Row="2" ItemsSource="{Binding MatchResults}"
+                         Visibility="{Binding IsViewModeIcons, Converter={StaticResource BoolToVisibilityConverter}}"
+                         MouseDoubleClick="OnMatchDoubleClick"
+                         MouseRightButtonUp="OnMatchRightClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Width="110" Margin="8" HorizontalAlignment="Center">
+                                <Border Width="64" Height="64"
+                                        CornerRadius="13"
+                                        Background="#F4F6F8"
+                                        BorderBrush="#ECECEC"
+                                        BorderThickness="1"
+                                        HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding ExtensionLabel}"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <CheckBox Style="{StaticResource FluentCheckBox}"
+                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                          HorizontalAlignment="Center"
+                                          Margin="0,7,0,0"
+                                          AutomationProperties.Name="{DynamicResource Automation_SelectMatch}"/>
+                                <TextBlock Text="{Binding FileName, Mode=OneWay}"
+                                           FontSize="10.5"
+                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                           TextTrimming="CharacterEllipsis"
+                                           TextAlignment="Center"
+                                           MaxWidth="104"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!-- ===== Empty state ===== -->
+        <Border Grid.Row="6" Style="{StaticResource CardBorder}" Padding="40"
+                Visibility="{Binding ShowEmptyState, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Border Width="74" Height="74"
+                        CornerRadius="20"
+                        Background="{StaticResource AccentSoftBrush}"
+                        HorizontalAlignment="Center">
+                    <TextBlock Text="&#xE8C8;"
+                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                               FontSize="30"
+                               Foreground="{StaticResource AccentBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+
+                <TextBlock Text="{Binding EmptyStateTitle}"
+                           FontSize="17"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           Margin="0,16,0,4"/>
+
+                <TextBlock Text="{Binding EmptyStateSubtitle}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           MaxWidth="440"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,20,0,0" HorizontalAlignment="Center">
+                    <Border Style="{StaticResource PillBorder}" Padding="12,6" Margin="0,0,8,0">
+                        <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}">
+                            <Run Text="1" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/><Run Text="{DynamicResource Empty_Step1}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Style="{StaticResource PillBorder}" Padding="12,6" Margin="0,0,8,0">
+                        <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}">
+                            <Run Text="2" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/><Run Text="{DynamicResource Empty_Step2}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Style="{StaticResource PillBorder}" Padding="12,6">
+                        <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}">
+                            <Run Text="3" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/><Run Text="{DynamicResource Empty_Step3}"/>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

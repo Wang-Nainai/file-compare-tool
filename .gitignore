@@ -1,0 +1,30 @@
+# Build output
+bin/
+obj/
+publish/
+artifacts/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# Test output
+TestResults/
+coverage/
+*.trx
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
